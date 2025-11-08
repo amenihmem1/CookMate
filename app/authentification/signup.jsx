@@ -11,7 +11,7 @@ import {
 import { useRouter } from "expo-router";
 import { useSignUp } from "@clerk/clerk-expo";
 import { useState } from "react";
-import { authStyles } from "../../assets/styles/auth.styles";
+import { authStyles } from "../../assets/styles/authentification.styles";
 import { Image } from "expo-image";
 import { COLORS } from "../../constants/colors";
 
@@ -36,6 +36,7 @@ const SignUpScreen = () => {
     setLoading(true);
 
     try {
+      
       await signUp.create({ emailAddress: email, password });
 
       await signUp.prepareEmailAddressVerification({ strategy: "email_code" });
@@ -51,7 +52,6 @@ const SignUpScreen = () => {
 
   if (pendingVerification)
     return <VerifyEmail email={email} onBack={() => setPendingVerification(false)} />;
-
   return (
     <View style={authStyles.container}>
       <KeyboardAvoidingView

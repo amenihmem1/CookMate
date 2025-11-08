@@ -15,7 +15,7 @@ import { Ionicons } from "@expo/vector-icons";
 
 import { Image } from "expo-image";
 
-import { authStyles } from "../../assets/styles/auth.styles";
+import { authStyles } from "../../assets/styles/authentification.styles";
 import { COLORS } from "../../constants/colors";
 
 const SignInScreen = () => {
@@ -129,7 +129,7 @@ const SignInScreen = () => {
             {/* Sign Up Link */}
             <TouchableOpacity
               style={authStyles.linkContainer}
-              onPress={() => router.push("/(auth)/sign-up")}
+              onPress={() => router.push("/authentification/signup")}
             >
               <Text style={authStyles.linkText}>
                 Don&apos;t have an account? <Text style={authStyles.link}>Sign up</Text>

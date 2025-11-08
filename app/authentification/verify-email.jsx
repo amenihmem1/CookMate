@@ -10,7 +10,7 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
-import { authStyles } from "../../assets/styles/auth.styles";
+import { authStyles } from "../../assets/styles/authentification.styles";
 import { Image } from "expo-image";
 import { COLORS } from "../../constants/colors";
 const VerifyEmail = ({ email, onBack }) => {
