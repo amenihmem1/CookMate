@@ -60,7 +60,7 @@ export default function RootLayout() {
             console.log('All tokens cleared successfully');
             
             // Force navigation to sign-in
-            router.replace("/(auth)/sign-in");
+            router.replace("/authentification/signin");
           } catch (error) {
             console.error('Error during token cleanup:', error);
           }

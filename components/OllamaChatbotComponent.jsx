@@ -1,11 +1,25 @@
 import React, { useState, useRef } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, FlatList, KeyboardAvoidingView, Platform, ActivityIndicator } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  FlatList,
+  KeyboardAvoidingView,
+  Platform,
+  ActivityIndicator,
+} from 'react-native';
 import { COLORS } from '../constants/colors';
-import { chat } from '../services/ollamaAPI';
+import { chat } from '../services/ollamaService';
 
 export default function OllamaChatbot({ model = 'llama2' }) {
   const [messages, setMessages] = useState([
-    { id: 'm1', role: 'assistant', text: "Hello! I'm your assistant. Ask me a question about cooking, a recipe, or request a suggestion." },
+    {
+      id: 'm1',
+      role: 'assistant',
+      text: "Hello! I'm your assistant. Ask me a question about cooking, a recipe, or request a suggestion.",
+    },
   ]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -13,6 +27,7 @@ export default function OllamaChatbot({ model = 'llama2' }) {
 
   const send = async () => {
     if (!input.trim()) return;
+
     const userMsg = { id: String(Date.now()), role: 'user', text: input.trim() };
     setMessages((m) => [...m, userMsg]);
     setInput('');
@@ -20,27 +35,51 @@ export default function OllamaChatbot({ model = 'llama2' }) {
 
     try {
       const responseText = await chat(userMsg.text);
-      const assistantMsg = { id: String(Date.now() + 1), role: 'assistant', text: responseText };
+      const assistantMsg = {
+        id: String(Date.now() + 1),
+        role: 'assistant',
+        text: responseText,
+      };
       setMessages((m) => [...m, assistantMsg]);
-
-      // Scroll to bottom
-      setTimeout(() => flatRef.current?.scrollToEnd?.({ animated: true }), 50);
     } catch (err) {
-      const errMsg = { id: String(Date.now() + 2), role: 'assistant', text: `Erreur: ${err.message}` };
+      let errorText = 'Erreur de connexion à Ollama.';
+      if (err.message.includes('Failed to fetch')) {
+        errorText += `\nAssure-toi qu'Ollama est lancé sur cet appareil et que l'URL est correcte.`;
+      } else {
+        errorText += `\nDétail: ${err.message}`;
+      }
+      const errMsg = { id: String(Date.now() + 2), role: 'assistant', text: errorText };
       setMessages((m) => [...m, errMsg]);
     } finally {
       setLoading(false);
+      setTimeout(() => flatRef.current?.scrollToEnd?.({ animated: true }), 50);
     }
   };
 
   const renderItem = ({ item }) => (
-    <View style={[styles.bubble, item.role === 'user' ? styles.userBubble : styles.assistantBubble]}>
-      <Text style={[styles.bubbleText, item.role === 'user' ? styles.userText : styles.assistantText]}>{item.text}</Text>
+    <View
+      style={[
+        styles.bubble,
+        item.role === 'user' ? styles.userBubble : styles.assistantBubble,
+      ]}
+    >
+      <Text
+        style={[
+          styles.bubbleText,
+          item.role === 'user' ? styles.userText : styles.assistantText,
+        ]}
+      >
+        {item.text}
+      </Text>
     </View>
   );
 
   return (
-    <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : undefined} keyboardVerticalOffset={90}>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      keyboardVerticalOffset={90}
+    >
       <FlatList
         data={messages}
         keyExtractor={(item) => item.id}
@@ -58,7 +97,11 @@ export default function OllamaChatbot({ model = 'llama2' }) {
           editable={!loading}
           multiline
         />
-        <TouchableOpacity style={[styles.sendButton, loading && styles.sendButtonDisabled]} onPress={send} disabled={loading}>
+        <TouchableOpacity
+          style={[styles.sendButton, loading && styles.sendButtonDisabled]}
+          onPress={send}
+          disabled={loading}
+        >
           {loading ? <ActivityIndicator color={COLORS.white} /> : <Text style={styles.sendText}>Send</Text>}
         </TouchableOpacity>
       </View>

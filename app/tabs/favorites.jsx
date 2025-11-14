@@ -24,7 +24,6 @@ const FavoritesScreen = () => {
 
         const favorites = await response.json();
 
-        // transform the data to match the RecipeCard component's expected format
         const transformedFavorites = favorites.map((favorite) => ({
           ...favorite,
           id: favorite.recipeId,
@@ -66,8 +65,7 @@ const FavoritesScreen = () => {
               await signOut();
               console.log('Signed out successfully');
               
-              // Force navigation to sign-in screen
-              router.replace("/(auth)/sign-in");
+              router.replace("/authentification/signin");
             } catch (error) {
               console.error('Error signing out:', error);
               console.error('Error details:', JSON.stringify(error, null, 2));
